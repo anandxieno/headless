@@ -16,8 +16,9 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchPosts() {
-      setLoading(true); // Step 2: Set loading to true before the request
+      
       try {
+        setLoading(true); // Step 2: Set loading to true before the request
         const data = await getAllPosts(); // Your fetchAPI logic
         console.log(data.nodes);
 
@@ -25,21 +26,29 @@ export default function Home() {
       } catch (error) {
         setError(error.message);
       }
-      setLoading(false); // Set loading to false after fetching
+      finally{
+        setLoading(false); // Set loading to false after fetching
+      }
+      
     }
 
     fetchPosts();
 
     /////////  Fetch Home Banner Data ////////////
    async function fetchBannerData() {
-    setLoading(true);
+   
       try {
+        setLoading(true);
         const Data = await homebanner();
-        setBannerData(Data) 
+        setBannerData(Data.homepage) 
+        console.log(Data);
+        
       }catch (error) {
         setError(error.message);
+      }finally{
+        setLoading(false);
       }
-      setLoading(false);
+      
    }
    fetchBannerData()
 
@@ -55,7 +64,7 @@ export default function Home() {
     }
     
     
-    console.log(featuredCars);
+    console.log(featuredCars, bannerData);
 
     setLoading(false);
       
@@ -79,8 +88,8 @@ export default function Home() {
 
       
       <section className="banner-section border py-10 text-center text-xl space-y-3">
-        <h1>{bannerData.homepage.bannerTitle}</h1>
-        <p>{bannerData.homepage.bannerExcerpt}</p>
+        <h1>{bannerData.bannerTitle}</h1>
+        <p>{bannerData.bannerExcerpt}</p>
         <Link href={"/"}>Shop</Link>
       </section>
 
@@ -94,7 +103,7 @@ export default function Home() {
           <h2>{featuredCar.title}</h2>
           <Image src={featuredCar.featuredImage.node.sourceUrl} width={300} height={0} className="w-80 h-auto object-fill" priority={false} ></Image>
           <Link href={featuredCar.uri}>Read More</Link>
-          <p>{featuredCar.content}</p>
+          <div className="short-content" dangerouslySetInnerHTML={{ __html: featuredCar.content }} />
         </div>
       ))}
     </>
